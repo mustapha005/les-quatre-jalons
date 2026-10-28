@@ -1,0 +1,22 @@
+{
+  "cnn": {
+    "model": "CNN_base",
+    "macro_f1": 0.9521686460189105,
+    "accuracy": 0.952
+  },
+  "mlp_reference": {
+    "macro_f1": 0.9315779495399555,
+    "accuracy": 0.9308333333333333
+  },
+  "detector": {
+    "model": "AE_128",
+    "auc": 0.8286833333333333,
+    "recall_at_val5pct": 0.4666666666666667,
+    "test_id_fpr": 0.046,
+    "false_rejects": 46,
+    "accepted_ood": 160,
+    "id_rows": 1000,
+    "ood_rows": 300,
+    "threshold": 0.017127474769949913
+  }
+}

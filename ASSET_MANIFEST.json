@@ -1,0 +1,110 @@
+{
+  "artifacts/jalon4/bow_vocabulary.json": {
+    "sha256": "6f5319ebdc960dfca7dfe1101d88ecb6cd3567143f26a32400b76c22778476d3",
+    "bytes": 2755
+  },
+  "artifacts/jalon4/frozen_protocol.json": {
+    "sha256": "fb1a379af3586bae654923d68f479482b123dd52bb8f368832046f2b3bdf913a",
+    "bytes": 2109
+  },
+  "artifacts/jalon4/event_numeric_scaler.joblib": {
+    "sha256": "c3ad4fb52183b2e7ed2ec042489152a53f2c19199b4a8c63614dca667b86c73a",
+    "bytes": 631
+  },
+  "artifacts/jalon4/test_results.json": {
+    "sha256": "3d803e3282b7f79c6ffd3e1f06c84f99cead039ade2b9ca00430e70970f432e7",
+    "bytes": 820
+  },
+  "artifacts/jalon3/frozen_protocol.json": {
+    "sha256": "3fcffde5cab056f32a1277fe85e17b7320e8b95f3e3ea60e1f0bbd0ee8719a5f",
+    "bytes": 2351
+  },
+  "artifacts/jalon3/vocabulary.json": {
+    "sha256": "6f5319ebdc960dfca7dfe1101d88ecb6cd3567143f26a32400b76c22778476d3",
+    "bytes": 2755
+  },
+  "artifacts/jalon3/log_price_scaler.json": {
+    "sha256": "6888d236ac97dd74f401a5d406ae43f691c10c1e1acc3409bde38c048040b1e9",
+    "bytes": 91
+  },
+  "artifacts/jalon3/test_results.json": {
+    "sha256": "4bff00b347240838de5079c3e097e2cd98562eeab264f8eca7b0ac6002766174",
+    "bytes": 813
+  },
+  "artifacts/jalon1/frozen_protocol.json": {
+    "sha256": "0a75fbcae18a2ed237e3ba0a90723b4f10162fb9a270a2525968f03aec651ec5",
+    "bytes": 2127
+  },
+  "artifacts/jalon1/vocabulary.json": {
+    "sha256": "6f5319ebdc960dfca7dfe1101d88ecb6cd3567143f26a32400b76c22778476d3",
+    "bytes": 2755
+  },
+  "artifacts/jalon1/session_rich_mlp_scaler.joblib": {
+    "sha256": "1adadd907c55b96fec57b3d7cdb6580450d6923e46063deb221f97bc41991ac1",
+    "bytes": 1983
+  },
+  "artifacts/jalon1/test_results.json": {
+    "sha256": "eda664e4b22c02a7646823da93ae1ded035f7cc37ad8594370fb96c3eac84c84",
+    "bytes": 897
+  },
+  "artifacts/jalon2/frozen_protocol.json": {
+    "sha256": "b83dc8fd954bafaf979ef4170fb05f12b4070fa2a5b568d2403d4bea61b0d333",
+    "bytes": 1995
+  },
+  "artifacts/jalon2/vocabulary.json": {
+    "sha256": "6f5319ebdc960dfca7dfe1101d88ecb6cd3567143f26a32400b76c22778476d3",
+    "bytes": 2755
+  },
+  "artifacts/jalon2/test_results.json": {
+    "sha256": "5738db9f647cb6eb9da4cb7a725aa6a89109bb4308318f7126a0fb528ebb96ab",
+    "bytes": 474
+  },
+  "artifacts/jalon4/models/BoW_MLP/best.keras": {
+    "sha256": "71f732d84700ef5411a819622492ddd50d059cbbe6ed29893b918882f9db66e3",
+    "bytes": 163798
+  },
+  "artifacts/jalon4/models/GRU_unmasked/best.keras": {
+    "sha256": "653a7705bb3a3e7b58860cb013c5c45113d8fed77a3cc660e272c06b3e52a1f5",
+    "bytes": 105951
+  },
+  "artifacts/jalon3/models/MT_warm_lambda_1p0/best.keras": {
+    "sha256": "6b4fce5578b2b0b367faa5ed4cd57c2314e07be105807efd01064a87290dc8c4",
+    "bytes": 5806401
+  },
+  "artifacts/jalon1/models/session_rich_mlp/best.keras": {
+    "sha256": "8e085cdebea6516868ca3c62c1f67744866f95aac49ed8daf8552adde134ef1b",
+    "bytes": 101674
+  },
+  "artifacts/jalon1/models/MLP_reference/best.keras": {
+    "sha256": "4891b115a2636a5a4575ed9ea27b1832622e87e42c343f638680f46c770086ae",
+    "bytes": 2991766
+  },
+  "artifacts/jalon1/models/price_log_huber/best.keras": {
+    "sha256": "c91e1f0958b42a0dac38ba44f93238027dcda9ec64f65685385807df5d5ec61b",
+    "bytes": 1494692
+  },
+  "artifacts/jalon2/models/AE_128/best.keras": {
+    "sha256": "942395eedf547d343671184efc17e6f53ac5d3f57e59d658a1c471f2af68d5c7",
+    "bytes": 5117489
+  },
+  "artifacts/jalon2/models/CNN_base/best.keras": {
+    "sha256": "33438f354820167fd28142d317ed703bdaf3843311bdd9b404db3da62e51e3d3",
+    "bytes": 4765802
+  },
+  "data_UC2/metadata.json": {
+    "sha256": "937d259370ba101183af0a6cd3730aec41e761c696ef96f637c0824d9dfcc0b2",
+    "bytes": 128
+  },
+  "data_UC2/uc2_catalogueB.npz": {
+    "sha256": "393daab329a3c9027fc499f661f6a9e933faddc1be7dd248eba0210ace4e0ed6",
+    "bytes": 150266
+  },
+  "data_UC2/uc2_sessions.npz": {
+    "sha256": "7f6a57190abb7be73433afd4aedd4fb7e61947249988c9a0a21c95be766e8e10",
+    "bytes": 14599
+  },
+  "data_UC2/uc2_catalogueA.npz": {
+    "sha256": "55a61fe519673c2642b58bd865e98efa852f5126d41fe1c51bbecadf3fc4b41e",
+    "bytes": 95832
+  }
+}

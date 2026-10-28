@@ -1,0 +1,8 @@
+{
+  "uc2_catalogueA.npz": {
+    "price_clip_upper": 27350.0
+  },
+  "uc2_catalogueB.npz": {
+    "price_clip_upper": 19150.0
+  }
+}

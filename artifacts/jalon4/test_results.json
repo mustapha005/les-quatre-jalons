@@ -1,0 +1,31 @@
+{
+  "purchase": {
+    "model": "GRU_unmasked",
+    "auc": 0.8361240033143869,
+    "average_precision": 0.6701539684894877,
+    "precision_top10": 0.7983333333333333,
+    "targeted_rows": 600,
+    "positive_rate": 0.2665
+  },
+  "logistic_reference": {
+    "auc": 0.7816110500783054,
+    "average_precision": 0.5178532897517184,
+    "precision_top10": 0.595,
+    "targeted_rows": 600,
+    "positive_rate": 0.2665
+  },
+  "coupon_fixed_val_threshold": {
+    "fixed_threshold_coverage": 0.10066666666666667,
+    "fixed_threshold_precision": 0.7980132450331126,
+    "fixed_threshold_targeted_rows": 604
+  },
+  "text_category": {
+    "model": "BoW_MLP",
+    "macro_f1": 0.7470678445078882,
+    "accuracy": 0.7396666666666667
+  },
+  "bow_reference": {
+    "macro_f1": 0.7470678445078882,
+    "accuracy": 0.7396666666666667
+  }
+}

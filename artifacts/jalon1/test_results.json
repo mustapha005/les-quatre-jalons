@@ -1,0 +1,35 @@
+{
+  "category": {
+    "model": "MLP_reference",
+    "macro_f1": 0.9315779495399555,
+    "accuracy": 0.9308333333333333
+  },
+  "price": {
+    "model": "price_log_huber",
+    "mape": 0.32619080751415297,
+    "mae_dh": 120.73291534537283,
+    "rmse_dh": 203.53713814098379,
+    "nonpositive_predictions": 0
+  },
+  "median_price_reference": {
+    "mape": 0.45758042032491025,
+    "mae_dh": 146.16916666666665,
+    "rmse_dh": 231.49455537153926,
+    "nonpositive_predictions": 0
+  },
+  "purchase": {
+    "model": "session_rich_mlp",
+    "auc": 0.8343986719716183,
+    "average_precision": 0.6519613991392154,
+    "precision_top10": 0.7783333333333333,
+    "targeted_rows": 600,
+    "positive_rate": 0.2665
+  },
+  "logistic_reference": {
+    "auc": 0.7816110500783054,
+    "average_precision": 0.5178532897517184,
+    "precision_top10": 0.595,
+    "targeted_rows": 600,
+    "positive_rate": 0.2665
+  }
+}

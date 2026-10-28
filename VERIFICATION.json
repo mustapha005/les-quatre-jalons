@@ -1,0 +1,25 @@
+{
+  "verified_at_utc": "2026-10-28T15:59:41.349876+00:00",
+  "python": "3.12",
+  "asset_verification": "27 assets match manifest; included selected models match frozen checksums",
+  "dependency_check": "pip check: No broken requirements found",
+  "streamlit_app_test": [
+    "PASS J1 catégorie, prix, achat",
+    "PASS J1 dernier exemple",
+    "PASS 2 · CNN et auto-encodeur",
+    "PASS 2 · CNN et auto-encodeur dernier exemple",
+    "PASS Annonce ci-dessus",
+    "PASS Rectangle synthétique de démonstration",
+    "PASS Bruit synthétique de démonstration",
+    "PASS 2 · CNN et auto-encodeur texte vide",
+    "PASS 3 · Boutique B et multitâche",
+    "PASS 3 · Boutique B et multitâche dernier exemple",
+    "PASS 3 · Boutique B et multitâche texte vide",
+    "PASS 4 · Sessions GRU",
+    "PASS 4 · Sessions GRU dernier exemple",
+    "PASS 4 · Sessions GRU texte vide"
+  ],
+  "training_rerun": false,
+  "cloud_deployment": "Not performed; see README for deployment settings",
+  "github_publication": "Blocked: connector returned HTTP 403 Resource not accessible by integration; repository not modified. Archive includes publication instructions."
+}
