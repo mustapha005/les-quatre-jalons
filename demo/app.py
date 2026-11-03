@@ -1,6 +1,9 @@
 """Démonstration locale UC2 : validation seulement, aucune formation."""
 from pathlib import Path
 import sys, json
+import base64
+from io import BytesIO
+from PIL import Image
 import numpy as np
 import pandas as pd
 import joblib
@@ -40,11 +43,22 @@ def show_class(prob,true=None):
     if true is not None:st.write('Étiquette validation : '+CLASSES[int(true)])
     st.bar_chart(pd.DataFrame({'score':prob.ravel()},index=CLASSES))
 
+def display_gray(pixels, caption):
+    """Embed a grayscale PNG directly in the page."""
+    arr = np.asarray(pixels)
+    if np.issubdtype(arr.dtype, np.floating):
+        arr = np.rint(np.clip(arr, 0, 1) * 255)
+    img = Image.fromarray(arr.astype(np.uint8)).resize((224, 224), Image.Resampling.NEAREST)
+    buf = BytesIO()
+    img.save(buf, format="PNG")
+    encoded = base64.b64encode(buf.getvalue()).decode("ascii")
+    st.html(f'<figure style="margin:0"><img width="224" height="224" alt="{caption}" src="data:image/png;base64,{encoded}"><figcaption>{caption}</figcaption></figure>')
+
 page=st.sidebar.selectbox('Jalon',['1 · MLP et prix','2 · CNN et auto-encodeur','3 · Boutique B et multitâche','4 · Sessions GRU'])
 if page.startswith(('1','2','3')):
     j=int(page[0]);d=data('uc2_catalogueB.npz' if j==3 else 'uc2_catalogueA.npz')
     index=st.slider('Annonce de validation',0,len(d['X_val'])-1,0)
-    image=d['X_val'][index];st.image(image,width=224,clamp=True)
+    image=d['X_val'][index];display_gray(image,'Annonce de validation')
     text=st.text_input('Description (modifiable)',str(d['description_val'][index]))
     st.caption('Modifier la description produit une prédiction exploratoire, sans nouvelle évaluation de performance.')
     x=image[None,...,None].astype('float32')/255.;words=bow(j,text)
@@ -73,7 +87,9 @@ if page.startswith(('1','2','3')):
         elif probe.startswith('Bruit'):x=np.random.default_rng(42).random((1,28,28,1),dtype=np.float32)
         recon=infer(2,'AE_128',x);score=float(np.mean((x-recon)**2))
         threshold=artifact(2,'frozen_protocol.json')['selection']['threshold']
-        st.image([x[0,...,0],recon[0,...,0]],caption=['Original','Reconstruction'],width=224,clamp=True)
+        left, right = st.columns(2)
+        with left: display_gray(x[0,...,0], 'Original')
+        with right: display_gray(recon[0,...,0], 'Reconstruction')
         st.write(f'MSE={score:.6f} ; seuil={threshold:.6f} ; '+('rejet' if score>threshold else 'acceptation'))
         st.caption('Une acceptation ne certifie pas une annonce valide. Les proxies du démonstrateur ne constituent pas un score OOD officiel.')
     else:
