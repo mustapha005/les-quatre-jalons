@@ -212,14 +212,17 @@ def ranking_metrics(y: np.ndarray, p: np.ndarray) -> dict:
 
 # ---------------------------------------------------------------- produits
 PRODUCT_MODELS = {
+    "fusion": {"label": "Fusion photo + texte · J3 + J4 (recommandé)", "short": "Fusion J3+J4", "j": 3, "name": "MT_warm_lambda_1p0",
+               "vocab": "vocabulary.json", "image": "4d", "acc": "moyenne des probabilités du multitâche et du BoW",
+               "real": "photos réelles : 81 % avec un titre simple, 51 % sans titre reconnu"},
     "cnn_a": {"label": "CNN image + texte · jalon 2 (boutique A)", "short": "CNN (J2)", "j": 2, "name": "CNN_base",
-              "vocab": "vocabulary.json", "image": "4d", "acc": "95,2 %"},
+              "vocab": "vocabulary.json", "image": "4d", "acc": "95,2 %", "real": "photos réelles : 40 % image seule, 65 % avec un titre simple"},
     "mlp_a": {"label": "MLP image + texte · jalon 1 (boutique A)", "short": "MLP (J1)", "j": 1, "name": "MLP_reference",
-              "vocab": "vocabulary.json", "image": "flat", "acc": "93,1 %"},
+              "vocab": "vocabulary.json", "image": "flat", "acc": "93,1 %", "real": "photos réelles : 36 % image seule, 59 % avec un titre simple"},
     "mt_b": {"label": "Multitâche adapté · jalon 3 (boutique B)", "short": "Multitâche (J3)", "j": 3, "name": "MT_warm_lambda_1p0",
-             "vocab": "vocabulary.json", "image": "4d", "acc": "80,4 % sur B"},
+             "vocab": "vocabulary.json", "image": "4d", "acc": "80,4 % sur B", "real": "photos réelles : 51 % image seule, 67 % avec un titre simple"},
     "bow": {"label": "Texte seul (BoW + MLP) · jalon 4", "short": "Texte BoW (J4)", "j": 4, "name": "BoW_MLP",
-            "vocab": "bow_vocabulary.json", "image": None, "acc": "74,0 %"},
+            "vocab": "bow_vocabulary.json", "image": None, "acc": "74,0 %", "real": "photos réelles : 77 % sur le titre seul"},
 }
 
 PRICE_MODELS = {
@@ -237,6 +240,13 @@ def category_probs(key: str, images: np.ndarray | None, texts) -> np.ndarray:
     spec = PRODUCT_MODELS[key]
     if spec["image"] is None or images is None:
         return text_probs(texts)
+    if key == "fusion":  # fusion tardive : moyenne image+texte (J3) et texte seul (J4) quand le titre contient des mots connus
+        texts = list(texts)
+        p = category_probs("mt_b", images, texts)
+        has_words = known_words(texts) > 0
+        if has_words.any():
+            p[has_words] = (p[has_words] + text_probs([t for t, h in zip(texts, has_words) if h])) / 2
+        return p
     words = bow(spec["j"], texts, spec["vocab"])
     x = images.reshape(len(images), 784) if spec["image"] == "flat" else images[..., None]
     out = infer(spec["j"], spec["name"], {"image": x.astype("float32"), "mots": words})
@@ -269,9 +279,91 @@ def reconstruction(images: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return recon[..., 0], np.mean((x - recon) ** 2, axis=(1, 2, 3))
 
 
+SEGMENTER = ROOT / "artifacts/segmentation/u2netp.onnx"
+
+
+@st.cache_resource(show_spinner=False)
+def _segmenter():
+    try:
+        import onnxruntime as ort
+    except ImportError:
+        return None
+    if not SEGMENTER.is_file():
+        return None
+    opts = ort.SessionOptions()
+    opts.log_severity_level = 3
+    return ort.InferenceSession(str(SEGMENTER), opts, providers=["CPUExecutionProvider"])
+
+
+def garment_mask(img: Image.Image) -> np.ndarray | None:
+    """Masque [0,1] de l'objet principal (U²-Net-p, détourage), à la taille de l'image ; None si indisponible."""
+    sess = _segmenter()
+    if sess is None:
+        return None
+    rgb = img.convert("RGB")
+    a = np.asarray(rgb.resize((320, 320), Image.Resampling.LANCZOS), dtype="float32")
+    a = a / max(float(a.max()), 1.0)
+    a = (a - np.array([0.485, 0.456, 0.406])) / np.array([0.229, 0.224, 0.225])
+    pred = sess.run(None, {sess.get_inputs()[0].name: a.transpose(2, 0, 1)[None].astype("float32")})[0][0, 0]
+    pred = (pred - pred.min()) / max(float(pred.max() - pred.min()), 1e-6)
+    m = Image.fromarray((pred * 255).astype(np.uint8)).resize(rgb.size, Image.Resampling.LANCZOS)
+    return np.asarray(m, dtype="float32") / 255.0
+
+
 def to_fashion_mnist(img: Image.Image) -> np.ndarray:
-    """Photo réelle → 28×28 en niveaux de gris, objet clair sur fond noir (format des jalons)."""
-    g = ImageOps.exif_transpose(img).convert("L")
+    """Photo réelle → 28×28 au format Fashion-MNIST.
+
+    Reprend la chaîne de conversion publiée de Fashion-MNIST (photos Zalando) : détourage du vêtement
+    (fond remplacé par du blanc), niveaux de gris, rognage, plus grand côté à 28 px, centrage, inversion.
+    """
+    img = ImageOps.exif_transpose(img).convert("RGB")
+    img.thumbnail((640, 640))
+    mask = garment_mask(img)
+    if mask is None:
+        return _to_fashion_mnist_heuristic(img)
+    g = np.asarray(img.convert("L"), dtype="float32")
+    obj = mask > 0.5
+    if obj.sum() < 50:
+        return _to_fashion_mnist_heuristic(img)
+    ys, xs = np.where(obj)
+    y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
+    ink = (255.0 - g) * mask  # vêtement sur fond blanc, puis inversion : fond noir, vêtement clair
+    ink = ink[y0:y1, x0:x1]
+    ink = np.maximum(ink, 40.0 * mask[y0:y1, x0:x1])  # un vêtement blanc reste visible, comme la silhouette Fashion-MNIST
+    h, w = ink.shape
+    scale = 28.0 / max(h, w)
+    nh, nw = max(1, round(h * scale)), max(1, round(w * scale))
+    small = Image.fromarray(np.clip(ink, 0, 255).astype(np.uint8)).resize((nw, nh), Image.Resampling.LANCZOS)
+    canvas = Image.new("L", (28, 28), 0)
+    canvas.paste(small, ((28 - nw) // 2, (28 - nh) // 2))
+    return np.asarray(canvas, dtype=np.uint8)
+
+
+def pil_jpeg(img: Image.Image, size: int = 240) -> bytes:
+    out = ImageOps.fit(ImageOps.exif_transpose(img).convert("RGB"), (size, size), Image.Resampling.LANCZOS)
+    buf = io.BytesIO()
+    out.save(buf, format="JPEG", quality=85)
+    return buf.getvalue()
+
+
+def cutout_png(img: Image.Image, size: int = 320, bg: str = "#EEF1EC") -> bytes | None:
+    """Vêtement détouré sur fond uni (aperçu de ce que voit la segmentation)."""
+    img = ImageOps.exif_transpose(img).convert("RGB")
+    img.thumbnail((size, size))
+    mask = garment_mask(img)
+    if mask is None:
+        return None
+    back = Image.new("RGB", img.size, bg)
+    out = Image.composite(img, back, Image.fromarray((mask * 255).astype(np.uint8)))
+    out = ImageOps.pad(out, (size, size), color=bg)
+    buf = io.BytesIO()
+    out.save(buf, format="PNG")
+    return buf.getvalue()
+
+
+def _to_fashion_mnist_heuristic(img: Image.Image) -> np.ndarray:
+    """Repli sans segmentation : seuil sur la couleur du bord."""
+    g = img.convert("L")
     g.thumbnail((512, 512))
     a = np.asarray(g, dtype="float32")
     border = np.concatenate([a[0], a[-1], a[:, 0], a[:, -1]])
@@ -352,21 +444,47 @@ def potential_score(factors: dict, weights: dict, has_image=None) -> np.ndarray:
     return np.asarray(total / np.maximum(wsum, 1e-9))
 
 
+REAL_DIR = ROOT / "assets" / "real_photos"
+
+
+@st.cache_data(show_spinner=False)
+def real_photos() -> dict:
+    """Photos réelles embarquées (CC0) et leur conversion 28×28 précalculée par la même fonction que l'import."""
+    with np.load(REAL_DIR / "real_photos.npz", allow_pickle=False) as z:
+        return {k: z[k] for k in z.files}
+
+
+def real_photo(name: str) -> Image.Image:
+    return Image.open(REAL_DIR / str(name))
+
+
+@st.cache_data(show_spinner=False)
+def square_jpeg(name: str, size: int = 360) -> bytes:
+    """Vignette carrée d'une photo réelle (recadrage centré) pour les cartes produit."""
+    img = ImageOps.fit(real_photo(name).convert("RGB"), (size, size), Image.Resampling.LANCZOS)
+    buf = io.BytesIO()
+    img.save(buf, format="JPEG", quality=85)
+    return buf.getvalue()
+
+
 @st.cache_data(show_spinner=False)
 def sample_catalogue() -> tuple[bytes, bytes]:
-    """CSV + ZIP d'images construits depuis les 200 annonces de validation (boutique A)."""
-    d = data("uc2_catalogueA.npz")
+    """CSV + ZIP de 70 photos réelles. Prix d'exemple = prix médian UC2 de la catégorie (démonstration)."""
+    r = real_photos()
+    med = category_median_price()
     rows = []
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
-        for i in range(len(d["prix_val"])):
-            name = f"annonce_{i:03d}.png"
-            png = io.BytesIO()
-            Image.fromarray(d["X_val"][i]).save(png, format="PNG")
-            z.writestr(name, png.getvalue())
-            rows.append({"product_id": f"A{i:03d}", "title": f"Annonce {i}",
-                         "description": str(d["description_val"][i]), "price": float(d["prix_val"][i]), "image": name})
+        for i, name in enumerate(r["name"]):
+            z.write(REAL_DIR / str(name), arcname=str(name))
+            rows.append({"product_id": f"R{i:03d}", "title": str(r["title"][i]), "description": "",
+                         "price": float(med[int(r["categorie"][i])]), "image": str(name)})
     return pd.DataFrame(rows).to_csv(index=False).encode("utf-8"), buf.getvalue()
+
+
+def sample_catalogue_images() -> dict[str, np.ndarray]:
+    r = real_photos()
+    return {str(n).lower(): x for n, x in zip(r["name"], r["X"])}
 
 
 CATALOGUE_ALIASES = {

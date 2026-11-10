@@ -5,7 +5,7 @@ import pandas as pd
 import streamlit as st
 
 from demo import core
-from demo.theme import hero, show_chart
+from demo.theme import ctitle, donut, hero, kpi, show_chart
 
 FORMAT = pd.DataFrame([
     ["session_id", "Identifiant du visiteur ou de la session", "S001", "oui"],
@@ -32,7 +32,7 @@ def render():
         use_sample = st.toggle("Utiliser l’exemple : 200 sessions de validation", value=True, key="sess_sample") if up is None else False
         st.download_button("Télécharger le modèle de fichier", core.sample_sessions_csv(), "sessions_exemple.csv", "text/csv", key="sess_tpl")
     with right, st.container(key="card_format_sessions"):
-        st.html('<div class="eyebrow">Format attendu</div>')
+        st.html(ctitle("Format attendu"))
         st.dataframe(FORMAT, hide_index=True, use_container_width=True)
         st.caption("Noms acceptés aussi : session, type, categorie, gamme_prix, duree, purchase… Les sessions de plus de 60 événements "
                    "sont tronquées aux 60 derniers.")
@@ -87,17 +87,24 @@ def render():
 
     st.write("")
     with st.container(key="panel_sess_results"):
-        st.html('<h2 style="margin:0 0 .8rem">Résultats</h2>')
-        m = st.columns(4)
-        m[0].metric("Sessions", f"{n}")
-        m[1].metric("Probabilité moyenne", f"{p.mean()*100:.1f} %")
-        m[2].metric("Ciblées (top 10 %)", f"{k}")
-        m[3].metric("Probabilité min. ciblée", f"{p[order[k-1]]*100:.1f} %")
-        if labels is not None:
-            met = core.ranking_metrics(labels.astype(int), p)
-            e = st.columns(4)
-            for col, (name, val) in zip(e, met.items()):
-                col.metric(name, f"{val:.3f}" if name in ("AUC", "Précision moyenne") else f"{val*100:.1f} %")
+        body, side = st.columns([3, 1], vertical_alignment="center")
+        with body:
+            st.html(f'<h2 style="margin:0 0 .9rem">Résultats · {core.PURCHASE_MODELS[key]["label"]}</h2>')
+            m = st.columns(4)
+            m[0].html(kpi(f"{n}", "Sessions analysées"))
+            m[1].html(kpi(f"{p.mean()*100:.1f} %", "Probabilité moyenne"))
+            m[2].html(kpi(f"{k}", "Ciblées (top 10 %)"))
+            m[3].html(kpi(f"{p[order[k-1]]*100:.1f} %", "Seuil du top 10 %"))
+            if labels is not None:
+                met = core.ranking_metrics(labels.astype(int), p)
+                st.write("")
+                e = st.columns(4)
+                for col, (name, val) in zip(e, met.items()):
+                    col.html(kpi(f"{val:.3f}" if name in ("AUC", "Précision moyenne") else f"{val*100:.1f} %", name))
+        with side:
+            hot = int((p >= 0.5).sum())
+            st.html(donut([("Probables", hot, "#22C77E"), ("Peu probables", n - hot, "#FFFFFF")], f"{hot/n*100:.0f}%",
+                          "sessions ≥ 50 %", dark=True, width=170))
             if compare:
                 met2 = core.ranking_metrics(labels.astype(int), q)
                 st.html(f'<p>{core.PURCHASE_MODELS[other]["short"]} sur le même fichier : AUC {met2.get("AUC", float("nan")):.3f} · '
@@ -105,26 +112,28 @@ def render():
 
     c1, c2 = st.columns([1.2, 1], gap="large")
     with c1, st.container(key="card_sess_hist"):
-        st.html('<div class="eyebrow">Distribution des probabilités</div>')
+        st.html(ctitle("Distribution des probabilités"))
         hist = pd.DataFrame({"probabilité": p, "groupe": np.where(rank <= k, "Top 10 % ciblé", "Autres")})
         if labels is not None:
             hist["groupe"] = np.where(labels.astype(int) == 1, "Achat réel", "Pas d’achat")
-        chart = alt.Chart(hist).mark_bar(opacity=.85, cornerRadiusTopLeft=4, cornerRadiusTopRight=4).encode(
-            x=alt.X("probabilité:Q", bin=alt.Bin(maxbins=25), axis=alt.Axis(format="%")),
-            y=alt.Y("count():Q", title="sessions", stack=None),
-            color=alt.Color("groupe:N", scale=alt.Scale(range=["#2F3A33", "#B9C4B5"]), legend=alt.Legend(orient="top", title=None)))
+        dom = ["Achat réel", "Pas d’achat"] if labels is not None else ["Top 10 % ciblé", "Autres"]
+        chart = alt.Chart(hist).mark_bar(cornerRadiusTopLeft=5, cornerRadiusTopRight=5, binSpacing=3).encode(
+            x=alt.X("probabilité:Q", bin=alt.Bin(maxbins=20), axis=alt.Axis(format="%", grid=False), title="probabilité d’achat"),
+            y=alt.Y("count():Q", title="sessions", stack=True),
+            color=alt.Color("groupe:N", scale=alt.Scale(domain=dom, range=["#22C77E", "#8F78FF"]), legend=alt.Legend(orient="top", title=None)),
+            tooltip=["groupe", alt.Tooltip("count():Q", title="sessions")])
         show_chart(chart.properties(height=260), use_container_width=True)
     with c2, st.container(key="card_sess_top"):
-        st.html('<div class="eyebrow">Sessions les plus proches d’un achat</div>')
+        st.html(ctitle("Sessions les plus proches d’un achat"))
         st.dataframe(res.head(10)[["session_id", "événements", "probabilité"] + (["achat réel"] if labels is not None else [])],
                      hide_index=True, use_container_width=True,
                      column_config={"probabilité": st.column_config.ProgressColumn(format="percent", min_value=0, max_value=1)})
 
     if compare:
         with st.container(key="card_sess_compare"):
-            st.html('<div class="eyebrow">Accord entre les deux modèles</div>')
+            st.html(ctitle("Accord entre les deux modèles"))
             sc = pd.DataFrame({core.PURCHASE_MODELS[key]["short"]: p, core.PURCHASE_MODELS[other]["short"]: q})
-            show_chart(alt.Chart(sc).mark_circle(size=45, color="#4F5D50", opacity=.6).encode(
+            show_chart(alt.Chart(sc).mark_circle(size=60, color="#6C4DF6", opacity=.55, stroke="#FFFFFF", strokeWidth=1).encode(
                 x=alt.X(f"{core.PURCHASE_MODELS[key]['short']}:Q", axis=alt.Axis(format="%")),
                 y=alt.Y(f"{core.PURCHASE_MODELS[other]['short']}:Q", axis=alt.Axis(format="%"))).properties(height=280),
                 use_container_width=True)

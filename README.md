@@ -9,17 +9,31 @@ Application bonus du travail UC2. Elle exécute les modèles sauvegardés des qu
 
 | Page | Ce que l’on fait | Modèles au choix |
 | --- | --- | --- |
-| Boutique en direct | Navigation dans une boutique démo (détails, panier, recherche, retrait) : chaque clic devient un événement et la probabilité d’achat est recalculée en temps réel. Onglet « client automatique » : une session de validation est rejouée événement par événement. | GRU (J4) · MLP riche (J1) |
+| Boutique en direct | Navigation dans une boutique démo façon site e-commerce (grille, fiche produit avec taille, quantité et recommandations, panier, recherche) ; la fiche s’ouvre dans la zone boutique, les statistiques restent visibles. Chaque clic devient un événement et la probabilité d’achat est recalculée en temps réel. Onglet « client automatique » : une session de validation est rejouée événement par événement. | GRU (J4) · MLP riche (J1) |
 | Prédire les achats | Import d’une base de parcours clients (CSV, une ligne par événement) → probabilité d’achat par session, rang, top 10 % ciblé, export CSV. Si une colonne `achat` est présente : AUC, P@10 %, précision moyenne. Comparaison des deux modèles. | GRU (J4) · MLP riche (J1) |
-| Potentiel produit | Photo (ou annonce exemple) + titre + description + prix → catégorie, prix estimé, contrôle de l’image par l’auto-encodeur et indice de potentiel de vente détaillé facteur par facteur (pondération réglable). | CNN (J2) · MLP (J1) · Multitâche B (J3) · texte BoW (J4) ; prix J1 ou J3 |
+| Potentiel produit | Photo réelle (exemple ou import) + titre + description + prix → catégorie, prix estimé, contrôle de l’image par l’auto-encodeur et indice de potentiel de vente détaillé facteur par facteur (pondération réglable). | Fusion J3 + J4 · CNN (J2) · MLP (J1) · Multitâche B (J3) · texte BoW (J4) ; prix J1 ou J3 |
 | Scorer un catalogue | Import d’un catalogue CSV (+ ZIP d’images facultatif) → indice par produit, fort / faible potentiel, graphiques, export. **Entraîner sur vos étiquettes** : avec une colonne cible (`vendu`, `ventes`, `viral`…), un modèle scikit-learn apprend une vraie probabilité de vente, évaluée par validation croisée. | mêmes modèles + régression logistique / forêt aléatoire / gradient boosting |
 | Les quatre jalons | Les vues d’origine ci-dessous, dans le nouveau style. | modèles retenus |
 
-Les pages « Prédire les achats » et « Scorer un catalogue » proposent un fichier modèle à télécharger (construit depuis les 200 exemples de validation) pour connaître le format exact.
+Les pages « Prédire les achats » et « Scorer un catalogue » proposent un fichier modèle à télécharger (200 sessions de validation ; 70 photos réelles avec titres, les prix d’exemple étant le prix médian UC2 de la catégorie) pour connaître le format exact.
 
 **À propos de l’indice de potentiel.** Les données UC2 ne contiennent ni ventes par produit ni étiquette « viral ». L’indice est donc une combinaison transparente de sorties des modèles (prix saisi vs prix estimé, confiance de catégorie, accord texte/image, richesse de l’annonce, conformité de l’image) et non une probabilité calibrée. Une vraie probabilité de vente demande un historique étiqueté : c’est le rôle de « Entraîner sur vos étiquettes ».
 
+**Photos réelles.** La boutique, l’accueil, la fiche produit et le catalogue d’exemple utilisent 70 vraies photos de vêtements (*clothing-dataset-small*, Alexey Grigorev, CC0 domaine public), dans `assets/real_photos/`. Toute photo (exemple ou importée) passe par la même chaîne : détourage du vêtement avec U²-Net-p (`artifacts/segmentation/u2netp.onnx`, Apache 2.0, 4,6 Mo, exécuté par onnxruntime), puis la conversion publiée de Fashion-MNIST (niveaux de gris, rognage, plus grand côté à 28 px, centrage, inversion). Mesure sur les 318 photos test de ce jeu (7 classes communes avec Fashion-MNIST, modèles non réentraînés) :
+
+| Modèle | Image seule | Image + titre simple |
+| --- | --- | --- |
+| CNN (J2) | 40 % | 65 % |
+| MLP (J1) | 36 % | 59 % |
+| Multitâche (J3) | 51 % | 67 % |
+| Fusion J3 + texte BoW J4 (défaut) | 51 % | 81 % |
+| Texte BoW seul (J4) | — | 77 % |
+
+Pantalons et robes sont bien reconnus sur l’image seule ; les hauts (t-shirt, pull, chemise, veste) se confondent, et les chaussures photographiées par paire, vue de dessus, ne ressemblent pas aux chaussures de profil de Fashion-MNIST. Pour reconstruire les exemples : `python scripts/build_real_examples.py <dossier clothing-dataset-small>`.
+
 **Boutique démo.** Les codes d’événement 1–5 sont fournis sans dictionnaire. L’interface leur associe : voir le produit = 1, détails = 2, panier = 3, retrait = 4, recherche = 5 (affiché dans l’application). Les photos réelles sont converties au format 28×28 des jalons ; l’auto-encodeur indique si elles sortent de la distribution apprise.
+
+**Fichiers de test manuel.** Le dossier `test_data/` contient un fichier de sessions (600 parcours simulés avec `achat`), un fichier de sessions volontairement fautif, et un catalogue de 245 annonces avec vraies photos (ZIP) et étiquette `vendu` simulée. Voir `test_data/LISEZMOI.md`.
 
 ## Ce que l’application démontre (vues d’origine)
 

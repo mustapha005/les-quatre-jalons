@@ -7,7 +7,7 @@ import pandas as pd
 import streamlit as st
 
 from demo import core
-from demo.theme import gray_png, hero, img_tag, show_chart
+from demo.theme import ctitle, gray_png, hero, img_tag, show_chart
 
 VIEWS = ["1 · MLP et prix", "2 · CNN et auto-encodeur", "3 · Boutique B et multitâche", "4 · Sessions GRU"]
 
@@ -17,8 +17,11 @@ def show_class(prob, true=None):
     st.html(f'<h3 style="margin:.2rem 0">Catégorie prédite : {core.CLASSES[k]}</h3>'
             + (f'<p class="note">Étiquette validation : {core.CLASSES[int(true)]}</p>' if true is not None else ""))
     df = pd.DataFrame({"catégorie": core.CLASSES, "score": np.asarray(prob).ravel()})
-    show_chart(alt.Chart(df).mark_bar(color="#4F5D50", cornerRadiusEnd=3).encode(
-        y=alt.Y("catégorie:N", sort=core.CLASSES, title=None), x=alt.X("score:Q", axis=alt.Axis(format="%"))).properties(height=250),
+    df["top"] = df["score"] == df["score"].max()
+    show_chart(alt.Chart(df).mark_bar(cornerRadiusEnd=6, height=14).encode(
+        y=alt.Y("catégorie:N", sort=core.CLASSES, title=None), x=alt.X("score:Q", axis=alt.Axis(format="%"), title=None),
+        color=alt.condition("datum.top", alt.value("#22C77E"), alt.value("#8F78FF")),
+        tooltip=["catégorie", alt.Tooltip("score:Q", format=".1%")]).properties(height=260),
         use_container_width=True)
 
 

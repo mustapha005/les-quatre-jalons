@@ -1,0 +1,17 @@
+{
+  "dataset": "clothing-dataset-small (Alexey Grigorev)",
+  "url": "https://github.com/alexeygrigorev/clothing-dataset-small",
+  "license": "CC0 1.0 Universal (domaine public)",
+  "split": "test",
+  "per_class": 10,
+  "seed": 42,
+  "class_mapping": {
+    "t-shirt": "T-shirt/top",
+    "pants": "Pantalon",
+    "longsleeve": "Pull",
+    "dress": "Robe",
+    "outwear": "Manteau",
+    "shirt": "Chemise",
+    "shoes": "Basket"
+  }
+}

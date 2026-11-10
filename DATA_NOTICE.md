@@ -14,3 +14,11 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ```
+
+## Photos réelles d’exemple
+
+70 photos de `assets/real_photos/` : *clothing-dataset-small*, Alexey Grigorev, https://github.com/alexeygrigorev/clothing-dataset-small — licence CC0 1.0 Universal (domaine public). Tirage aléatoire (graine 42), 10 photos par classe, partition test, redimensionnées à 480 px.
+
+## Modèle de détourage
+
+`artifacts/segmentation/u2netp.onnx` : U²-Net-p (Qin et al., 2020), https://github.com/xuebinqin/U-2-Net — licence Apache 2.0. Fichier ONNX distribué par rembg (https://github.com/danielgatis/rembg, MD5 8e83ca70e441ab06c318d82300c84806), utilisé sans modification.

@@ -1,9 +1,9 @@
 [theme]
 base = "light"
-primaryColor = "#4F5D50"
-backgroundColor = "#DCE1DA"
-secondaryBackgroundColor = "#EEF1EC"
-textColor = "#1F2A22"
+primaryColor = "#6C4DF6"
+backgroundColor = "#DCDDF8"
+secondaryBackgroundColor = "#F3F1FF"
+textColor = "#1E1B3A"
 baseRadius = "large"
 
 [server]

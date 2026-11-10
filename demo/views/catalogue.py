@@ -7,7 +7,7 @@ import pandas as pd
 import streamlit as st
 
 from demo import core
-from demo.theme import hero, show_chart
+from demo.theme import ctitle, donut, gradient, hero, kpi, legend_rows, show_chart
 from demo.views.product import weights_editor
 
 FORMAT = pd.DataFrame([
@@ -40,8 +40,8 @@ def render():
     with left, st.container(key="card_cat_upload"):
         csv = st.file_uploader("Catalogue CSV", type=["csv"], key="cat_csv")
         zipf = st.file_uploader("Images (ZIP, facultatif)", type=["zip"], key="cat_zip")
-        use_sample = st.toggle("Utiliser l’exemple : 200 annonces de validation", value=True, key="cat_sample") if csv is None else False
-        mkey = st.selectbox("Modèle de catégorie", list(core.PRODUCT_MODELS), key="cat_model",
+        use_sample = st.toggle("Utiliser l’exemple : 70 photos réelles", value=True, key="cat_sample") if csv is None else False
+        mkey = st.selectbox("Modèle de catégorie", list(core.PRODUCT_MODELS), index=0, key="cat_model",
                             format_func=lambda k: core.PRODUCT_MODELS[k]["label"])
         pkey = st.selectbox("Modèle de prix", list(core.PRICE_MODELS), key="cat_price_model", format_func=core.PRICE_MODELS.get)
         sample_csv, sample_zip = core.sample_catalogue()
@@ -49,10 +49,10 @@ def render():
         d1.download_button("Modèle CSV", sample_csv, "catalogue_exemple.csv", "text/csv", key="cat_tpl", use_container_width=True)
         d2.download_button("Images exemple", sample_zip, "images_exemple.zip", "application/zip", key="cat_tpl_zip", use_container_width=True)
     with right, st.container(key="card_cat_format"):
-        st.html('<div class="eyebrow">Format attendu</div>')
+        st.html(ctitle("Format attendu"))
         st.dataframe(FORMAT, hide_index=True, use_container_width=True)
         st.caption("Noms acceptés aussi : titre, prix, nom, photo… Sans image, la catégorie vient du texte seul et le prix estimé "
-                   "est la médiane de la catégorie. Les photos sont converties au format 28×28 des jalons.")
+                   "est la médiane de la catégorie. Chaque photo est détourée (U²-Net) puis convertie au format 28×28 des jalons, comme Fashion-MNIST.")
         weights = weights_editor("cat")
 
     if csv is not None:
@@ -61,10 +61,11 @@ def render():
         except Exception as e:
             st.error(f"Lecture du CSV impossible : {e}")
             return
-        images = _images(zipf.getvalue()) if zipf is not None else {}
+        with st.spinner("Détourage et conversion des photos…"):
+            images = _images(zipf.getvalue()) if zipf is not None else {}
     elif use_sample:
         raw = pd.read_csv(BytesIO(sample_csv))
-        images = _images(sample_zip)
+        images = core.sample_catalogue_images()
     else:
         st.info("Importez un catalogue ou activez l’exemple.")
         return
@@ -81,38 +82,46 @@ def render():
     res["groupe"] = np.where(res["potentiel"] >= q_hi, "Fort potentiel", np.where(res["potentiel"] <= q_lo, "Faible potentiel", "Intermédiaire"))
 
     with st.container(key="panel_cat_results"):
-        st.html('<h2 style="margin:0 0 .8rem">Vue d’ensemble</h2>')
-        m = st.columns(4)
-        m[0].metric("Produits", n)
-        m[1].metric("Avec image", int((res["image"] == "oui").sum()))
-        m[2].metric("Indice moyen", f"{res['potentiel'].mean()*100:.0f}")
-        m[3].metric("Prix au-dessus de l’estimation", f"{(res['prix (DH)'] > res['prix estimé (DH)']).mean()*100:.0f} %")
+        body, side, leg = st.columns([2.4, .9, 1], vertical_alignment="center")
+        with body:
+            st.html('<h2 style="margin:0 0 .9rem">Vue d’ensemble du catalogue</h2>')
+            m = st.columns(4)
+            m[0].html(kpi(f"{n}", "Produits"))
+            m[1].html(kpi(f"{int((res['image'] == 'oui').sum())}", "Avec photo"))
+            m[2].html(kpi(f"{res['potentiel'].mean()*100:.0f}", "Indice moyen /100"))
+            m[3].html(kpi(f"{(res['prix (DH)'] > res['prix estimé (DH)']).mean()*100:.0f} %", "Prix > estimation"))
+        g = res["groupe"].value_counts()
+        parts = [("Fort potentiel", int(g.get("Fort potentiel", 0)), "#22C77E"),
+                 ("Intermédiaire", int(g.get("Intermédiaire", 0)), "#B9A9FF"),
+                 ("Faible potentiel", int(g.get("Faible potentiel", 0)), "#F2557A")]
+        side.html(donut(parts, f"{n}", "produits", dark=True, width=160))
+        leg.html(legend_rows([(c, l, str(v)) for l, v, c in parts]))
 
     cols_show = ["product_id", "titre", "catégorie prédite", "prix (DH)", "prix estimé (DH)", "potentiel"]
     cfg = {"potentiel": st.column_config.ProgressColumn("indice", format="percent", min_value=0, max_value=1)}
     c1, c2 = st.columns(2, gap="large")
     with c1, st.container(key="card_cat_high"):
-        st.html('<div class="eyebrow">Fort potentiel · top 20 %</div>')
+        st.html(ctitle("Fort potentiel · top 20 %"))
         st.dataframe(res.sort_values("potentiel", ascending=False).head(8)[cols_show], hide_index=True,
                      use_container_width=True, column_config=cfg)
     with c2, st.container(key="card_cat_low"):
-        st.html('<div class="eyebrow">Faible potentiel · bas 20 %</div>')
+        st.html(ctitle("Faible potentiel · bas 20 %"))
         st.dataframe(res.sort_values("potentiel").head(8)[cols_show], hide_index=True, use_container_width=True, column_config=cfg)
 
     c3, c4 = st.columns([1.2, 1], gap="large")
     with c3, st.container(key="card_cat_cat"):
-        st.html('<div class="eyebrow">Indice moyen par catégorie</div>')
+        st.html(ctitle("Indice moyen par catégorie"))
         agg = res.groupby("catégorie prédite").agg(indice=("potentiel", "mean"), produits=("potentiel", "size")).reset_index()
-        show_chart(alt.Chart(agg).mark_bar(color="#4F5D50", cornerRadiusEnd=4).encode(
+        show_chart(alt.Chart(agg).mark_bar(color=gradient("#6C4DF6", .95, .45, horizontal=True), cornerRadiusEnd=6, height=16).encode(
             y=alt.Y("catégorie prédite:N", sort="-x", title=None), x=alt.X("indice:Q", axis=alt.Axis(format="%")),
             tooltip=["catégorie prédite", alt.Tooltip("indice:Q", format=".0%"), "produits"]).properties(height=300),
             use_container_width=True)
     with c4, st.container(key="card_cat_price"):
-        st.html('<div class="eyebrow">Prix saisi vs prix estimé</div>')
-        show_chart(alt.Chart(res).mark_circle(size=55, opacity=.7).encode(
+        st.html(ctitle("Prix saisi vs prix estimé"))
+        show_chart(alt.Chart(res).mark_circle(size=70, opacity=.75, stroke="#FFFFFF", strokeWidth=1).encode(
             x=alt.X("prix estimé (DH):Q", scale=alt.Scale(type="log")), y=alt.Y("prix (DH):Q", scale=alt.Scale(type="log")),
             color=alt.Color("groupe:N", scale=alt.Scale(domain=["Fort potentiel", "Intermédiaire", "Faible potentiel"],
-                                                        range=["#3E7C55", "#AEBBAA", "#A6493F"]), legend=alt.Legend(orient="top", title=None)),
+                                                        range=["#22C77E", "#A99BFF", "#F2557A"]), legend=alt.Legend(orient="top", title=None)),
             tooltip=["titre", "prix (DH)", "prix estimé (DH)", alt.Tooltip("potentiel:Q", format=".0%")]).properties(height=300),
             use_container_width=True)
 
@@ -210,19 +219,20 @@ def _trainer(res: pd.DataFrame):
         st.info("Paramètres modifiés : relancez l’entraînement.")
         return
     heur_auc = roc_auc_score(r["y"], r["heur"])
-    m = st.columns(3)
-    m[0].metric("AUC validation croisée", f"{r['auc']:.3f}")
-    m[1].metric("AUC de l’indice heuristique", f"{heur_auc:.3f}")
-    m[2].metric("Taux positif", f"{r['y'].mean()*100:.1f} %")
+    with st.container(key="card_train_kpi"):
+        m = st.columns(3)
+        m[0].html(kpi(f"{r['auc']:.3f}", "AUC validation croisée", "modèle entraîné", good=r["auc"] >= heur_auc))
+        m[1].html(kpi(f"{heur_auc:.3f}", "AUC de l’indice heuristique", "référence", good=True))
+        m[2].html(kpi(f"{r['y'].mean()*100:.1f} %", "Taux positif"))
     c1, c2 = st.columns([1, 1.2], gap="large")
     with c1, st.container(key="card_train_imp"):
-        st.html('<div class="eyebrow">Signaux les plus utiles</div>')
+        st.html(ctitle("Signaux les plus utiles"))
         top = np.argsort(-r["imp"])[:12]
         show_chart(alt.Chart(pd.DataFrame({"signal": np.array(names)[top], "importance": r["imp"][top]})).mark_bar(
-            color="#4F5D50", cornerRadiusEnd=3).encode(y=alt.Y("signal:N", sort="-x", title=None), x="importance:Q").properties(height=320),
+            color=gradient("#6C4DF6", .95, .45, horizontal=True), cornerRadiusEnd=5, height=14).encode(y=alt.Y("signal:N", sort="-x", title=None), x="importance:Q").properties(height=320),
             use_container_width=True)
     with c2, st.container(key="card_train_pred"):
-        st.html('<div class="eyebrow">Probabilité de vente (hors échantillon)</div>')
+        st.html(ctitle("Probabilité de vente (hors échantillon)"))
         out = pd.DataFrame({"product_id": r["ids"], "titre": r["titles"], "probabilité de vente": r["oof"].round(3), r["target"]: r["y"]})
         out = out.sort_values("probabilité de vente", ascending=False)
         st.dataframe(out, hide_index=True, use_container_width=True, height=320,

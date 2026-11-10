@@ -1,0 +1,246 @@
+product_id,title,description,price,vendu
+P0001,T-shirt coton,,65.0,1
+P0002,T-shirt over size,neuf avec étiquette coton bleu taille XL,150.0,0
+P0003,Tee shirt col rond,,95.0,0
+P0004,Top manches courtes,très bon état coton gris taille M stock limité échange possible prix négociable,90.0,1
+P0005,Top manches courtes,,40.0,0
+P0006,T-shirt over size,neuf avec étiquette polyester vert taille XL,140.0,0
+P0007,Top manches courtes,très bon état coton bleu taille XL,85.0,1
+P0008,Tee shirt col rond,très bon état coton bordeaux taille M,90.0,0
+P0009,T-shirt coton,neuf avec étiquette viscose bleu taille M photos réelles stock limité paiement à la livraison,75.0,1
+P0010,Tee shirt col rond,très bon état coton marine taille XL photos réelles,105.0,1
+P0011,Top manches courtes,très bon état polyester noir taille XL livraison partout au maroc paiement à la livraison échange possible,55.0,1
+P0012,Top manches courtes,très bon état polyester rose taille M,65.0,0
+P0013,Tee shirt col rond,porté quelques fois coton vert taille S qualité premium prix négociable photos réelles,120.0,0
+P0014,Top manches courtes,porté quelques fois viscose rose taille XL prix négociable,120.0,0
+P0015,T-shirt over size,occasion lin rose taille XL urgent paiement à la livraison,75.0,1
+P0016,T-shirt over size,porté quelques fois polyester marine taille S,110.0,0
+P0017,T-shirt coton,porté quelques fois lin marine taille M livraison partout au maroc,55.0,1
+P0018,T-shirt coton,porté quelques fois polyester camel taille M livraison partout au maroc,70.0,0
+P0019,T-shirt over size,neuf avec étiquette lin rose taille S prix négociable original qualité premium,85.0,1
+P0020,Tee shirt col rond,neuf avec étiquette viscose gris taille L original,150.0,0
+P0021,T-shirt coton,très bon état coton noir taille L,125.0,0
+P0022,Top manches courtes,neuf avec étiquette polyester blanc taille L original livraison partout au maroc,105.0,1
+P0023,T-shirt over size,porté quelques fois polyester rouge taille M prix négociable paiement à la livraison stock limité,95.0,0
+P0024,Top manches courtes,neuf avec étiquette lin bordeaux taille L,155.0,0
+P0025,T-shirt coton,très bon état coton blanc taille M stock limité échange possible livraison partout au maroc,70.0,0
+P0026,Top manches courtes,neuf avec étiquette viscose vert taille S photos réelles,115.0,1
+P0027,Top manches courtes,très bon état viscose gris taille XL échange possible paiement à la livraison prix négociable,70.0,0
+P0028,T-shirt coton,neuf avec étiquette polyester camel taille XL urgent,100.0,1
+P0029,Top manches courtes,très bon état polyester blanc taille L,100.0,1
+P0030,Tee shirt col rond,neuf avec étiquette viscose rouge taille L livraison partout au maroc qualité premium stock limité,135.0,1
+P0031,Top manches courtes,neuf avec étiquette coton camel taille L livraison partout au maroc paiement à la livraison,60.0,1
+P0032,T-shirt over size,neuf avec étiquette coton camel taille S urgent,150.0,0
+P0033,Top manches courtes,porté quelques fois coton gris taille S,45.0,1
+P0034,T-shirt over size,très bon état viscose gris taille L stock limité qualité premium,75.0,1
+P0035,Top manches courtes,très bon état viscose noir taille XL prix négociable,65.0,1
+P0036,Pantalon chino,neuf avec étiquette coton bleu taille M,220.0,0
+P0037,Pantalon chino,,375.0,0
+P0038,Jogging sport,porté quelques fois polyester noir taille M urgent échange possible photos réelles,145.0,1
+P0039,Jogging sport,occasion lin vert taille M qualité premium,95.0,0
+P0040,Pantalon chino,très bon état polyester marine taille L,195.0,0
+P0041,Pantalon coupe droite,très bon état coton rouge taille S urgent paiement à la livraison,90.0,1
+P0042,Jean slim,neuf avec étiquette coton beige taille L urgent prix négociable,275.0,0
+P0043,Jean slim,occasion polyester blanc taille XL original urgent,120.0,1
+P0044,Pantalon chino,occasion polyester gris taille XL échange possible qualité premium,105.0,1
+P0045,Pantalon coupe droite,occasion lin rose taille XL,140.0,0
+P0046,Pantalon chino,neuf avec étiquette viscose bordeaux taille S,330.0,0
+P0047,Pantalon coupe droite,neuf avec étiquette coton blanc taille XL livraison partout au maroc,190.0,1
+P0048,Jean slim,neuf avec étiquette viscose rose taille XL original stock limité,255.0,0
+P0049,Jogging sport,,220.0,1
+P0050,Pantalon coupe droite,très bon état lin rose taille S,100.0,0
+P0051,Pantalon chino,occasion lin rouge taille S urgent qualité premium livraison partout au maroc,150.0,0
+P0052,Jean slim,occasion lin rouge taille L,130.0,1
+P0053,Jogging sport,neuf avec étiquette polyester gris taille XL livraison partout au maroc urgent stock limité,180.0,1
+P0054,Pantalon coupe droite,neuf avec étiquette polyester blanc taille L photos réelles stock limité qualité premium,165.0,1
+P0055,Pantalon chino,très bon état lin noir taille L livraison partout au maroc photos réelles,175.0,1
+P0056,Pantalon chino,très bon état lin rouge taille L prix négociable,130.0,0
+P0057,Pantalon chino,occasion viscose rose taille M livraison partout au maroc,150.0,0
+P0058,Jean slim,très bon état polyester noir taille XL livraison partout au maroc,125.0,1
+P0059,Jean slim,très bon état coton gris taille M original stock limité qualité premium,160.0,1
+P0060,Pantalon coupe droite,neuf avec étiquette viscose rose taille XL stock limité livraison partout au maroc,240.0,1
+P0061,Pantalon chino,porté quelques fois viscose gris taille XL,130.0,0
+P0062,Pantalon chino,neuf avec étiquette polyester bordeaux taille XL photos réelles paiement à la livraison,320.0,0
+P0063,Jean slim,porté quelques fois polyester noir taille L qualité premium livraison partout au maroc,105.0,0
+P0064,Jogging sport,neuf avec étiquette viscose camel taille L prix négociable,345.0,0
+P0065,Pantalon chino,neuf avec étiquette viscose gris taille M qualité premium livraison partout au maroc prix négociable,490.0,0
+P0066,Jean slim,,180.0,1
+P0067,Jean slim,neuf avec étiquette lin marine taille M,180.0,0
+P0068,Jean slim,très bon état polyester blanc taille M livraison partout au maroc photos réelles,175.0,0
+P0069,Jean slim,très bon état viscose rose taille S qualité premium prix négociable livraison partout au maroc,225.0,0
+P0070,Jean slim,neuf avec étiquette coton rose taille L livraison partout au maroc photos réelles,275.0,1
+P0071,Sweat hoodie,neuf avec étiquette tricot vert taille XL,125.0,1
+P0072,Sweat hoodie,neuf avec étiquette laine rose taille S livraison partout au maroc,230.0,0
+P0073,Sweat hoodie,porté quelques fois laine bleu taille L paiement à la livraison livraison partout au maroc,100.0,1
+P0074,Sweat hoodie,neuf avec étiquette tricot gris taille XL prix négociable stock limité photos réelles,215.0,1
+P0075,Pull en laine,neuf avec étiquette laine noir taille XL prix négociable,225.0,1
+P0076,Pull en laine,porté quelques fois laine blanc taille M urgent livraison partout au maroc échange possible,120.0,1
+P0077,Pull manches longues,neuf avec étiquette coton blanc taille L prix négociable,280.0,1
+P0078,Sweat hoodie,occasion laine rose taille L paiement à la livraison échange possible,110.0,0
+P0079,Sweat hoodie,porté quelques fois tricot rose taille XL échange possible stock limité original,235.0,0
+P0080,Pull manches longues,très bon état laine rose taille S,120.0,1
+P0081,Sweat hoodie,neuf avec étiquette laine noir taille M photos réelles échange possible,185.0,1
+P0082,Pull col roulé,très bon état coton gris taille S,150.0,0
+P0083,Sweat hoodie,occasion tricot rouge taille M,80.0,0
+P0084,Pull en laine,occasion tricot noir taille S qualité premium stock limité photos réelles,130.0,1
+P0085,Sweat hoodie,neuf avec étiquette tricot bleu taille L livraison partout au maroc qualité premium échange possible,340.0,0
+P0086,Pull col roulé,,190.0,1
+P0087,Pull en laine,très bon état coton rose taille L urgent photos réelles échange possible,165.0,1
+P0088,Pull manches longues,très bon état tricot beige taille XL qualité premium paiement à la livraison,130.0,0
+P0089,Pull manches longues,très bon état coton beige taille M prix négociable photos réelles urgent,150.0,1
+P0090,Pull en laine,occasion laine bordeaux taille M qualité premium urgent échange possible,105.0,0
+P0091,Pull manches longues,neuf avec étiquette coton vert taille M,160.0,0
+P0092,Pull en laine,très bon état coton noir taille M,130.0,0
+P0093,Pull manches longues,porté quelques fois laine bordeaux taille XL livraison partout au maroc qualité premium,155.0,1
+P0094,Sweat hoodie,neuf avec étiquette tricot blanc taille M original paiement à la livraison,145.0,1
+P0095,Pull en laine,,230.0,0
+P0096,Pull manches longues,porté quelques fois tricot camel taille S,85.0,0
+P0097,Pull col roulé,très bon état tricot bleu taille S original stock limité prix négociable,190.0,1
+P0098,Sweat hoodie,neuf avec étiquette tricot rose taille S livraison partout au maroc qualité premium original,265.0,1
+P0099,Sweat hoodie,occasion laine noir taille XL original stock limité livraison partout au maroc,80.0,1
+P0100,Sweat hoodie,neuf avec étiquette tricot rouge taille XL photos réelles échange possible stock limité,235.0,1
+P0101,Pull col roulé,porté quelques fois laine bordeaux taille XL stock limité prix négociable photos réelles,190.0,1
+P0102,Pull manches longues,porté quelques fois laine noir taille XL prix négociable,90.0,0
+P0103,Pull manches longues,neuf avec étiquette laine rouge taille S,160.0,1
+P0104,Pull manches longues,porté quelques fois tricot bleu taille XL urgent paiement à la livraison échange possible,110.0,1
+P0105,Pull en laine,porté quelques fois tricot vert taille L,135.0,1
+P0106,Robe légère été,neuf avec étiquette coton marine taille XL photos réelles paiement à la livraison,265.0,1
+P0107,Robe midi,porté quelques fois viscose blanc taille M,290.0,1
+P0108,Robe de soirée,neuf avec étiquette polyester beige taille M,295.0,0
+P0109,Robe légère été,porté quelques fois viscose beige taille M paiement à la livraison photos réelles,280.0,0
+P0110,Robe de soirée,neuf avec étiquette coton bleu taille L,490.0,0
+P0111,Robe midi,porté quelques fois polyester marine taille M stock limité original paiement à la livraison,175.0,1
+P0112,Robe légère été,occasion lin vert taille M prix négociable,205.0,0
+P0113,Robe légère été,neuf avec étiquette polyester bordeaux taille L photos réelles prix négociable qualité premium,185.0,1
+P0114,Robe légère été,neuf avec étiquette lin noir taille M prix négociable,520.0,1
+P0115,Robe longue,très bon état lin marine taille L prix négociable,300.0,0
+P0116,Robe midi,très bon état polyester gris taille XL urgent photos réelles échange possible,140.0,1
+P0117,Robe midi,très bon état lin noir taille L échange possible prix négociable,395.0,0
+P0118,Robe midi,occasion viscose noir taille M stock limité livraison partout au maroc qualité premium,200.0,1
+P0119,Robe de soirée,occasion viscose bordeaux taille L livraison partout au maroc,365.0,0
+P0120,Robe midi,occasion polyester beige taille M échange possible livraison partout au maroc stock limité,130.0,0
+P0121,Robe midi,neuf avec étiquette coton beige taille L,305.0,1
+P0122,Robe légère été,neuf avec étiquette viscose vert taille XL,375.0,0
+P0123,Robe légère été,porté quelques fois coton vert taille L urgent stock limité,360.0,0
+P0124,Robe de soirée,très bon état coton rose taille L stock limité,170.0,0
+P0125,Robe légère été,neuf avec étiquette polyester rouge taille M stock limité original prix négociable,285.0,1
+P0126,Robe légère été,neuf avec étiquette viscose bleu taille M échange possible stock limité livraison partout au maroc,400.0,1
+P0127,Robe de soirée,neuf avec étiquette lin noir taille XL urgent,245.0,1
+P0128,Robe légère été,neuf avec étiquette coton marine taille S prix négociable échange possible,540.0,1
+P0129,Robe midi,,150.0,1
+P0130,Robe midi,neuf avec étiquette coton bordeaux taille S original stock limité,410.0,1
+P0131,Robe de soirée,,145.0,1
+P0132,Robe légère été,très bon état polyester camel taille M,300.0,1
+P0133,Robe légère été,porté quelques fois coton camel taille S photos réelles paiement à la livraison,135.0,1
+P0134,Robe de soirée,occasion lin bordeaux taille L échange possible,165.0,0
+P0135,Robe de soirée,porté quelques fois lin rose taille M photos réelles qualité premium,160.0,1
+P0136,Robe de soirée,porté quelques fois polyester vert taille L,340.0,0
+P0137,Robe de soirée,très bon état viscose rose taille S,175.0,1
+P0138,Robe midi,très bon état coton rose taille S photos réelles livraison partout au maroc,185.0,1
+P0139,Robe midi,neuf avec étiquette coton blanc taille M,180.0,1
+P0140,Robe légère été,très bon état lin noir taille L,80.0,1
+P0141,Blouson,neuf avec étiquette polyester vert taille L,505.0,0
+P0142,Blouson,,225.0,1
+P0143,Doudoune hiver,neuf avec étiquette polyester rose taille S stock limité urgent,420.0,1
+P0144,Blouson,très bon état cuir noir taille S livraison partout au maroc stock limité urgent,480.0,0
+P0145,Veste zip,très bon état polyester bleu taille XL paiement à la livraison original,335.0,1
+P0146,Blouson,très bon état cuir vert taille S échange possible paiement à la livraison photos réelles,185.0,1
+P0147,Parka imperméable,occasion laine beige taille XL prix négociable original paiement à la livraison,180.0,1
+P0148,Veste zip,porté quelques fois polyester blanc taille S,400.0,0
+P0149,Blouson,très bon état coton gris taille S urgent,270.0,0
+P0150,Doudoune hiver,très bon état laine camel taille M photos réelles qualité premium urgent,370.0,0
+P0151,Parka imperméable,porté quelques fois coton beige taille M,250.0,0
+P0152,Blouson,porté quelques fois cuir camel taille S,355.0,0
+P0153,Parka imperméable,neuf avec étiquette laine bleu taille M prix négociable,175.0,1
+P0154,Doudoune hiver,porté quelques fois coton gris taille L prix négociable urgent stock limité,435.0,0
+P0155,Blouson,neuf avec étiquette coton vert taille L photos réelles,825.0,1
+P0156,Parka imperméable,neuf avec étiquette laine vert taille M urgent,450.0,1
+P0157,Parka imperméable,occasion laine camel taille L qualité premium échange possible photos réelles,300.0,0
+P0158,Blouson,très bon état laine noir taille S original échange possible,255.0,1
+P0159,Veste zip,très bon état polyester vert taille L original,290.0,1
+P0160,Doudoune hiver,neuf avec étiquette polyester rose taille XL qualité premium,390.0,1
+P0161,Parka imperméable,très bon état cuir camel taille L stock limité,260.0,0
+P0162,Veste zip,porté quelques fois cuir rose taille XL livraison partout au maroc paiement à la livraison,200.0,1
+P0163,Veste zip,porté quelques fois polyester bleu taille S original urgent,715.0,0
+P0164,Veste zip,neuf avec étiquette laine bordeaux taille L photos réelles prix négociable qualité premium,360.0,1
+P0165,Parka imperméable,neuf avec étiquette cuir vert taille L,575.0,0
+P0166,Doudoune hiver,occasion cuir rouge taille XL prix négociable,260.0,0
+P0167,Doudoune hiver,neuf avec étiquette laine camel taille S original stock limité,575.0,0
+P0168,Veste zip,très bon état coton camel taille L original échange possible,320.0,0
+P0169,Doudoune hiver,très bon état polyester bordeaux taille XL original,380.0,0
+P0170,Doudoune hiver,très bon état cuir camel taille L urgent livraison partout au maroc,240.0,0
+P0171,Doudoune hiver,neuf avec étiquette coton rouge taille S stock limité urgent qualité premium,285.0,1
+P0172,Parka imperméable,très bon état laine bordeaux taille XL,235.0,1
+P0173,Veste zip,très bon état polyester bleu taille M,195.0,1
+P0174,Parka imperméable,porté quelques fois polyester noir taille XL livraison partout au maroc qualité premium stock limité,265.0,0
+P0175,Blouson,porté quelques fois coton bordeaux taille S,220.0,1
+P0176,Chemise manches courtes,très bon état polyester camel taille L urgent,255.0,0
+P0177,Surchemise,très bon état polyester rose taille L,70.0,1
+P0178,Chemise en lin,occasion viscose noir taille L échange possible photos réelles urgent,135.0,0
+P0179,Chemisier,porté quelques fois coton rose taille L,85.0,1
+P0180,Chemise en lin,occasion lin noir taille M stock limité,135.0,0
+P0181,Chemise manches courtes,très bon état lin rouge taille XL échange possible,145.0,1
+P0182,Chemise en lin,très bon état coton noir taille L paiement à la livraison photos réelles,90.0,1
+P0183,Surchemise,,160.0,0
+P0184,Surchemise,porté quelques fois polyester camel taille M,140.0,0
+P0185,Chemise en lin,neuf avec étiquette polyester rose taille L qualité premium paiement à la livraison stock limité,155.0,0
+P0186,Chemisier,occasion viscose blanc taille M paiement à la livraison,105.0,0
+P0187,Chemise en lin,neuf avec étiquette coton blanc taille XL échange possible,170.0,1
+P0188,Surchemise,très bon état lin marine taille L original,150.0,0
+P0189,Surchemise,porté quelques fois polyester camel taille L urgent,100.0,1
+P0190,Surchemise,neuf avec étiquette lin bordeaux taille XL stock limité,135.0,0
+P0191,Surchemise,très bon état viscose bleu taille XL paiement à la livraison photos réelles prix négociable,230.0,1
+P0192,Chemise en lin,très bon état coton noir taille S,75.0,1
+P0193,Chemisier,occasion viscose blanc taille L échange possible,125.0,1
+P0194,Chemisier,très bon état polyester gris taille XL échange possible urgent photos réelles,110.0,1
+P0195,Chemise en lin,occasion lin marine taille L,105.0,0
+P0196,Chemisier,neuf avec étiquette lin bordeaux taille S urgent photos réelles,225.0,0
+P0197,Chemise manches courtes,occasion viscose camel taille M échange possible,110.0,1
+P0198,Chemise en lin,très bon état coton bordeaux taille S stock limité,170.0,0
+P0199,Chemisier,occasion polyester beige taille S livraison partout au maroc stock limité prix négociable,60.0,0
+P0200,Chemisier,porté quelques fois coton vert taille XL photos réelles échange possible stock limité,140.0,1
+P0201,Chemise en lin,occasion lin blanc taille M photos réelles stock limité,80.0,1
+P0202,Chemise manches courtes,occasion viscose vert taille M,115.0,0
+P0203,Chemise en lin,neuf avec étiquette lin rouge taille S livraison partout au maroc qualité premium photos réelles,130.0,1
+P0204,Chemise en lin,très bon état polyester noir taille S,140.0,0
+P0205,Chemisier,neuf avec étiquette polyester noir taille L original prix négociable paiement à la livraison,175.0,1
+P0206,Chemisier,porté quelques fois lin rouge taille S,165.0,0
+P0207,Chemisier,porté quelques fois viscose marine taille S stock limité,105.0,0
+P0208,Chemisier,très bon état coton beige taille L,145.0,0
+P0209,Chemisier,très bon état polyester bleu taille S livraison partout au maroc urgent qualité premium,115.0,1
+P0210,Chemise en lin,neuf avec étiquette viscose rose taille M stock limité échange possible,155.0,1
+P0211,Sneaker blanc,occasion synthétique bordeaux pointure 43 paiement à la livraison,125.0,1
+P0212,Sandale,neuf avec étiquette daim bordeaux pointure 41 paiement à la livraison,285.0,1
+P0213,Sandale,occasion daim rouge pointure 39 photos réelles paiement à la livraison,175.0,0
+P0214,Bottine cuir,neuf avec étiquette toile rouge pointure 42,225.0,1
+P0215,Sandale,porté quelques fois synthétique gris pointure 42,265.0,0
+P0216,Bottine cuir,très bon état synthétique rose pointure 43 prix négociable paiement à la livraison,225.0,0
+P0217,Sneaker blanc,neuf avec étiquette toile beige pointure 43 livraison partout au maroc original,310.0,1
+P0218,Bottine cuir,porté quelques fois synthétique marine pointure 44,155.0,0
+P0219,Basket running,neuf avec étiquette toile noir pointure 42,185.0,1
+P0220,Sneaker blanc,,310.0,1
+P0221,Bottine cuir,,440.0,0
+P0222,Sandale,neuf avec étiquette cuir noir pointure 44 échange possible qualité premium,655.0,1
+P0223,Sneaker blanc,,125.0,1
+P0224,Basket running,occasion cuir vert pointure 38 stock limité livraison partout au maroc,225.0,0
+P0225,Basket running,porté quelques fois daim rose pointure 44 paiement à la livraison,330.0,0
+P0226,Sneaker blanc,neuf avec étiquette toile vert pointure 44 urgent stock limité original,215.0,1
+P0227,Sneaker blanc,très bon état cuir gris pointure 39,220.0,1
+P0228,Sneaker blanc,neuf avec étiquette toile rouge pointure 41 stock limité,525.0,0
+P0229,Bottine cuir,neuf avec étiquette cuir gris pointure 42,200.0,1
+P0230,Bottine cuir,occasion daim rouge pointure 39 échange possible urgent,115.0,1
+P0231,Basket running,,470.0,0
+P0232,Sandale,porté quelques fois toile vert pointure 38 photos réelles,155.0,1
+P0233,Sneaker blanc,neuf avec étiquette cuir beige pointure 44 paiement à la livraison qualité premium,440.0,0
+P0234,Basket running,,155.0,0
+P0235,Basket running,très bon état synthétique bordeaux pointure 39 qualité premium,165.0,1
+P0236,Bottine cuir,occasion synthétique camel pointure 41 paiement à la livraison qualité premium prix négociable,125.0,1
+P0237,Bottine cuir,neuf avec étiquette cuir gris pointure 41,325.0,0
+P0238,Sneaker blanc,neuf avec étiquette synthétique beige pointure 44 paiement à la livraison original livraison partout au maroc,320.0,1
+P0239,Sandale,neuf avec étiquette daim rose pointure 41 prix négociable,545.0,1
+P0240,Sandale,occasion toile bordeaux pointure 38 photos réelles original échange possible,180.0,1
+P0241,Bottine cuir,porté quelques fois daim marine pointure 44,405.0,0
+P0242,Bottine cuir,porté quelques fois daim camel pointure 42 livraison partout au maroc,385.0,0
+P0243,Bottine cuir,très bon état synthétique camel pointure 42,380.0,0
+P0244,Sneaker blanc,occasion daim bordeaux pointure 42 urgent échange possible,225.0,0
+P0245,Bottine cuir,neuf avec étiquette synthétique rouge pointure 38,175.0,1

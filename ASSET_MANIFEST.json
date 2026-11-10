@@ -106,5 +106,13 @@
   "data_UC2/uc2_catalogueA.npz": {
     "sha256": "55a61fe519673c2642b58bd865e98efa852f5126d41fe1c51bbecadf3fc4b41e",
     "bytes": 95832
+  },
+  "artifacts/segmentation/u2netp.onnx": {
+    "bytes": 4574861,
+    "sha256": "309c8469258dda742793dce0ebea8e6dd393174f89934733ecc8b14c76f4ddd8"
+  },
+  "assets/real_photos/real_photos.npz": {
+    "bytes": 41359,
+    "sha256": "7fbbb94e3d03fc8b68ce0574d9f680c9fc4e897b2069734465ca77bd9008fd5b"
   }
 }
