@@ -2,7 +2,7 @@ import numpy as np
 import streamlit as st
 
 from demo import core
-from demo.theme import hero, icon_svg, img_tag, product_png
+from demo.theme import hero, icon_svg, img_tag, kpi
 
 FEATURES = [
     ("live", "Boutique en direct", "Naviguez dans une boutique démo : chaque clic met à jour la probabilité d’achat.", "boutique"),
@@ -11,7 +11,7 @@ FEATURES = [
     ("chart", "Scorer un catalogue", "Classez tout un catalogue, puis entraînez un modèle sur vos propres étiquettes de ventes.", "catalogue"),
 ]
 
-SHOWCASE = [12, 3, 7]
+SHOWCASE = [30, 40, 10]  # robe, veste, pantalon parmi les photos réelles embarquées
 
 
 def render():
@@ -27,35 +27,46 @@ def render():
                 st.page_link(_page(url), label="Ouvrir  →")
 
     st.write("")
-    d = core.data("uc2_catalogueA.npz")
+    r = core.real_photos()
     idx = np.array(SHOWCASE)
-    images = d["X_val"][idx].astype("float32") / 255.0
-    texts = [str(t) for t in d["description_val"][idx]]
-    probs = core.category_probs("cnn_a", images, texts)
-    prices = core.price_estimates("huber_a", images, texts)
+    images = r["X"][idx].astype("float32") / 255.0
+    titles = [str(t) for t in r["title"][idx]]
+    probs = core.category_probs("fusion", images, titles)
+    prices = core.price_estimates("huber_a", images, titles)
 
-    with st.container(key="panel_showcase"):
-        st.html('<h2 style="text-align:center;font-size:2.6rem;margin:.2rem 0 1.2rem">Vous pourriez aussi aimer</h2>')
+    with st.container(key="card_kpis"):
+        k = st.columns(5)
+        for col, (v, l) in zip(k, [("8", "modèles entraînés"), ("4", "jalons UC2"), ("70", "photos réelles"),
+                                   ("200", "sessions de validation"), ("81 %", "catégorie juste · photo + titre")]):
+            col.html(kpi(v, l))
+    st.write("")
+    with st.container(key="glass_showcase"):
+        st.html('<div class="ctitle" style="font-size:1.35rem"><span>Vous pourriez aussi aimer</span>'
+                '<span class="pill">Prédictions en direct</span></div>')
         pc = st.columns(3, gap="large")
         for k, col in enumerate(pc):
-            i = int(idx[k])
+            name = str(r["name"][idx[k]])
             with col:
                 with st.container(key=f"pcard_home_{k}"):
-                    st.html(img_tag(product_png(d["X_val"][i]), CLASSES_LABEL(probs[k])))
-                    st.html(f'<div class="ptitle">{core.CLASSES[int(probs[k].argmax())]} · {texts[k][:34]}</div>'
-                            f'<div class="pprice">{float(d["prix_val"][i]):.2f} DH · estimé {float(prices[k]):.0f} DH</div>')
+                    st.html(img_tag(core.square_jpeg(name), titles[k]))
+                    st.html(f'<div class="ptitle">{titles[k]}</div>'
+                            f'<div class="pprice">{float(prices[k]):.0f} DH · prédit : {core.CLASSES[int(probs[k].argmax())]}</div>')
                     b1, b2 = st.columns(2)
                     b1.page_link(_page("produit"), label="Analyser")
                     b2.page_link(_page("boutique"), label="Acheter")
-        st.html('<p style="text-align:center;opacity:.85;margin-top:1rem">Catégorie (CNN, jalon 2) et prix (MLP log-Huber, jalon 1) '
-                'calculés à l’instant sur trois annonces de validation.</p>')
+        st.html('<p class="note" style="text-align:center;margin-top:1rem">Photos réelles (domaine public). Chaque photo est détourée puis '
+                'convertie en 28×28 ; catégorie par la fusion photo + texte (jalons 3 et 4) et prix par le MLP log-Huber (jalon 1), calculés à l’instant.</p>')
 
     with st.expander("Données, modèles et limites"):
         st.markdown(
-            "- **Données** : images Fashion-MNIST (28×28, niveaux de gris) ; descriptions, prix et sessions simulés pour le cours. "
-            "Seules 200 lignes de validation par jeu sont distribuées avec l’application.\n"
+            "- **Données d’entraînement** : images Fashion-MNIST (28×28, niveaux de gris) ; descriptions, prix et sessions simulés pour le cours. "
+            "Seules 200 lignes de validation par jeu sont distribuées avec l’application (page *Les quatre jalons*).\n"
+            "- **Photos réelles** : 70 photos du jeu *clothing-dataset-small* (Alexey Grigorev, CC0 domaine public) servent d’exemples "
+            "dans la boutique, la fiche produit et le catalogue.\n"
             "- **Modèles** : les huit checkpoints `.keras` des notebooks, lus sans réentraînement.\n"
-            "- **Photos réelles** : elles sont converties au format 28×28 des jalons ; l’auto-encodeur signale si l’image sort de la distribution apprise.\n"
+            "- **Conversion des photos** : détourage par U²-Net-p (Apache 2.0), puis la chaîne de Fashion-MNIST (gris, rognage, 28 px, centrage, inversion). "
+            "Sur 318 photos réelles test, la catégorie est correcte 51 % du temps avec l’image seule (multitâche J3) et 81 % avec un titre simple (fusion J3 + J4) ; "
+            "les chaussures photographiées par paire, vue de dessus, sont mal reconnues.\n"
             "- **Indice de potentiel** : combinaison transparente de sorties de modèles (prix, confiance, cohérence, annonce, image). "
             "Aucun label « viral » ou « vendu » n’existe dans les données UC2 ; pour un vrai modèle de ventes, utilisez "
             "« Entraîner sur vos étiquettes » dans *Scorer un catalogue*.\n"

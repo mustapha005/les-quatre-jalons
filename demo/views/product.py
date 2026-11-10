@@ -6,7 +6,7 @@ import streamlit as st
 from PIL import Image
 
 from demo import core
-from demo.theme import chip, factor_bar, gray_png, hero, img_tag, verdict, show_chart
+from demo.theme import chip, ctitle, donut, factor_bar, gray_png, hero, img_tag, verdict, show_chart
 
 
 def weights_editor(prefix: str) -> dict:
@@ -26,29 +26,36 @@ def render():
          "Ajoutez la photo, le titre, la description et le prix d’un article. Les modèles prédisent sa catégorie, estiment son prix "
          "et calculent un indice de potentiel de vente.", icon="tag", eyebrow="Analyse d’annonce")
 
-    d = core.data("uc2_catalogueA.npz")
+    r = core.real_photos()
     left, right = st.columns([1, 1.25], gap="large")
     with left, st.container(key="card_product_form"):
-        source = st.segmented_control("Image", ["Ma photo", "Annonce exemple"], default="Annonce exemple", key="prod_source") or "Annonce exemple"
-        image28, original = None, None
+        source = st.segmented_control("Image", ["Photo exemple", "Ma photo"], default="Photo exemple", key="prod_source") or "Photo exemple"
+        image28, original, cut = None, None, None
         if source == "Ma photo":
-            up = st.file_uploader("Photo du produit", type=["png", "jpg", "jpeg", "webp"], key="prod_img")
+            up = st.file_uploader("Photo du produit (fond uni de préférence)", type=["png", "jpg", "jpeg", "webp"], key="prod_img")
             if up is not None:
+                with st.spinner("Détourage de la photo…"):
+                    image28, cut = _convert(up.getvalue())
                 original = Image.open(up)
-                image28 = core.to_fashion_mnist(original)
             default_title, default_desc, default_price = "", "", 250.0
+            tag = "upload"
         else:
-            idx = st.slider("Annonce de validation", 0, len(d["X_val"]) - 1, 12, key="prod_idx")
-            image28 = d["X_val"][idx]
-            default_title = core.CLASSES[int(d["categorie_val"][idx])]
-            default_desc = str(d["description_val"][idx])
-            default_price = float(d["prix_val"][idx])
-        title = st.text_input("Titre", default_title, key=f"prod_title_{source}_{st.session_state.get('prod_idx')}")
-        desc = st.text_area("Description", default_desc, height=90, key=f"prod_desc_{source}_{st.session_state.get('prod_idx')}",
+            idx = st.slider("Photo réelle (70 exemples, domaine public)", 0, len(r["name"]) - 1, 30, key="prod_idx")
+            name = str(r["name"][idx])
+            st.html(img_tag(core.square_jpeg(name, 280), name, width=200))
+            image28 = r["X"][idx]
+            original = core.real_photo(name)
+            cut = core.cutout_png(original, 280)
+            default_title, default_desc = str(r["title"][idx]), ""
+            default_price = float(core.category_median_price()[int(r["categorie"][idx])])
+            tag = str(idx)
+        title = st.text_input("Titre", default_title, key=f"prod_title_{tag}")
+        desc = st.text_area("Description", default_desc, height=90, key=f"prod_desc_{tag}",
                             placeholder="ex. robe noire élégante coton neuf avec étiquette livraison partout au maroc")
-        price = st.number_input("Prix de vente (DH)", 1.0, 30000.0, default_price, 5.0, key=f"prod_price_{source}_{st.session_state.get('prod_idx')}")
-        mkey = st.selectbox("Modèle de catégorie", list(core.PRODUCT_MODELS), key="prod_model",
-                            format_func=lambda k: f'{core.PRODUCT_MODELS[k]["label"]} — exactitude test {core.PRODUCT_MODELS[k]["acc"]}')
+        price = st.number_input("Prix de vente (DH)", 1.0, 30000.0, default_price, 5.0, key=f"prod_price_{tag}")
+        mkey = st.selectbox("Modèle de catégorie", list(core.PRODUCT_MODELS), index=0, key="prod_model",
+                            format_func=lambda k: core.PRODUCT_MODELS[k]["label"])
+        st.caption(f'{core.PRODUCT_MODELS[mkey]["acc"]} · {core.PRODUCT_MODELS[mkey]["real"]}')
         pkey = st.selectbox("Modèle de prix", list(core.PRICE_MODELS), key="prod_price_model", format_func=core.PRICE_MODELS.get)
         weights = weights_editor("prod")
 
@@ -73,8 +80,10 @@ def render():
     with right, st.container(key="panel_product"):
         a, b = st.columns([1, 1.1], vertical_alignment="center")
         with a:
-            st.html(f'<div class="eyebrow" style="color:#E6ECE4">Indice de potentiel</div><div class="bigscore">{score*100:.0f}</div>'
-                    f'<div style="margin:.4rem 0">{chip(label, kind)}</div>')
+            st.html('<div class="eyebrow" style="color:rgba(255,255,255,.85)">Indice de potentiel</div>'
+                    + donut([("indice", score, "#22C77E" if kind == "good" else ("#F5A524" if kind == "warn" else "#F2557A")),
+                             ("reste", 1 - score, "rgba(255,255,255,0)")], f"{score*100:.0f}", "sur 100", dark=True, width=165)
+                    + f'<div style="text-align:center;margin:.3rem 0">{chip(label, kind)}</div>')
         with b:
             st.html(f'<h3 style="margin:0">{core.CLASSES[cat]}</h3><p style="margin:.2rem 0">confiance {probs.max()*100:.0f} % · '
                     f'{core.PRODUCT_MODELS[mkey]["short"]}</p>'
@@ -87,34 +96,41 @@ def render():
 
     c1, c2 = st.columns([1.25, 1], gap="large")
     with c1, st.container(key="card_probs"):
-        st.html('<div class="eyebrow">Probabilités par catégorie</div>')
+        st.html(ctitle("Probabilités par catégorie"))
         dfp = pd.DataFrame({"catégorie": core.CLASSES, "modèle choisi": probs, "texte seul (J4)": tprobs}).melt(
             "catégorie", var_name="source", value_name="probabilité")
-        show_chart(alt.Chart(dfp).mark_bar(cornerRadiusEnd=3).encode(
+        show_chart(alt.Chart(dfp).mark_bar(cornerRadiusEnd=5, height=9).encode(
             y=alt.Y("catégorie:N", sort=core.CLASSES, title=None), x=alt.X("probabilité:Q", axis=alt.Axis(format="%")),
-            yOffset="source:N", color=alt.Color("source:N", scale=alt.Scale(range=["#2F3A33", "#AEBBAA"]),
+            yOffset="source:N", color=alt.Color("source:N", scale=alt.Scale(range=["#6C4DF6", "#22C77E"]),
                                                 legend=alt.Legend(orient="top", title=None))).properties(height=330),
             use_container_width=True)
     with c2, st.container(key="card_image_check"):
-        st.html('<div class="eyebrow">Ce que voit le modèle</div>')
+        st.html(ctitle("Ce que voit le modèle"))
         if has_image:
-            i1, i2, i3 = st.columns(3)
+            cols = st.columns(4)
             if original is not None:
-                i1.image(original, caption="Photo importée", use_container_width=True)
-            else:
-                i1.html(img_tag(gray_png(image28, 140), "annonce") + '<p class="note">Annonce</p>')
-            i2.html(img_tag(gray_png(image28, 140), "entrée 28×28") + '<p class="note">Entrée 28×28</p>')
-            i3.html(img_tag(gray_png(recon[0], 140), "reconstruction") + '<p class="note">Reconstruction AE</p>')
+                cols[0].html(img_tag(core.pil_jpeg(original, 200), "photo", radius=10) + '<p class="note">Photo</p>')
+            if cut is not None:
+                cols[1].html(img_tag(cut, "détourage", radius=10) + '<p class="note">Détourage</p>')
+            cols[2].html(img_tag(gray_png(image28, 140), "entrée 28×28", radius=10) + '<p class="note">Entrée 28×28</p>')
+            cols[3].html(img_tag(gray_png(recon[0], 140), "reconstruction", radius=10) + '<p class="note">Reconstruction AE</p>')
             th = core.ae_threshold()
             ok = mse <= th
-            st.html(chip("Image dans la distribution" if ok else "Image hors distribution", "good" if ok else "warn")
-                    + f'<p class="note">Erreur {mse:.4f} · seuil figé {th:.4f}.</p>')
-            if not ok:
-                st.caption("Les modèles ont appris sur des vignettes Fashion-MNIST (vêtement centré, fond uni). Une photo très différente "
-                           "rend la catégorie et le prix moins fiables : l’indice baisse en conséquence.")
+            st.html(chip("Silhouette proche de l’entraînement" if ok else "Silhouette inhabituelle", "good" if ok else "warn")
+                    + f'<p class="note">Erreur de reconstruction {mse:.4f} · seuil figé {th:.4f}.</p>')
+            st.caption("La photo est détourée (U²-Net-p), puis convertie comme Fashion-MNIST : gris, rognage, 28 px, centrage, inversion. "
+                       "Les modèles voient donc une silhouette : formes nettes (pantalon, robe) bien reconnues ; hauts proches entre eux "
+                       "et chaussures en paire vue de dessus plus difficiles. Le titre améliore nettement la prédiction.")
         else:
             st.caption("Ajoutez une photo pour activer les modèles image et le contrôle de l’auto-encodeur.")
 
     st.caption("Indice heuristique et transparent, construit à partir des modèles des jalons. Les données UC2 ne contiennent ni ventes "
                "par produit ni étiquette « viral » : ce n’est pas une probabilité de vente calibrée. Pour apprendre une vraie "
                "probabilité de vente, importez un historique étiqueté dans « Scorer un catalogue ».")
+
+
+@st.cache_data(show_spinner=False, max_entries=32)
+def _convert(raw: bytes):
+    from io import BytesIO
+    img = Image.open(BytesIO(raw))
+    return core.to_fashion_mnist(img), core.cutout_png(img, 280)

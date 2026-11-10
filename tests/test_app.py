@@ -36,7 +36,7 @@ check(a, "accueil")
 # Boutique en direct
 a = page("live_shop")
 check(a, "boutique vide")
-for k in ["d_0", "c_0", "c_5", "shop_remove", "shop_search"]:
+for k in ["open_g_0", "padd_0", "more_0", "shop_back", "add_10", "shop_cart_open", "rm_0_0", "shop_back_cart", "shop_search"]:
     button(a, k).click().run()
     check(a, f"boutique clic {k}")
 a.selectbox(key="shop_model").select("mlp").run()
@@ -55,13 +55,13 @@ check(a, "sessions MLP")
 # Produit : exemple et chaque modèle, texte vide
 a = page("product")
 check(a, "produit exemple")
-for m in ["mlp_a", "mt_b", "bow", "cnn_a"]:
+for m in ["mlp_a", "mt_b", "bow", "cnn_a", "fusion"]:
     a.selectbox(key="prod_model").select(m).run()
     check(a, f"produit modèle {m}")
 a.selectbox(key="prod_price_model").select("mt_b").run()
 check(a, "produit prix multitâche")
-a.slider(key="prod_idx").set_value(199).run()
-check(a, "produit dernier exemple")
+a.slider(key="prod_idx").set_value(69).run()
+check(a, "produit dernière photo réelle")
 
 # Catalogue : exemple
 a = page("catalogue")
@@ -109,7 +109,7 @@ csv, zipb = core.sample_catalogue()
 cat = pd.read_csv(BytesIO(csv))
 imgs = core.read_zip_images(zipb)
 res = core.score_products(cat, "cnn_a", "huber_a", imgs, core.DEFAULT_WEIGHTS)
-assert len(res) == 200 and res["potentiel"].between(0, 1).all()
+assert len(res) == 70 and res["potentiel"].between(0, 1).all()
 res2 = core.score_products(cat.drop(columns=["image"]), "mlp_a", "mt_b", {}, core.DEFAULT_WEIGHTS)
 assert (res2["source estimation"] == "médiane de la catégorie").all()
 print("PASS catalogue avec et sans images")
@@ -118,13 +118,16 @@ from PIL import Image  # noqa: E402
 photo = Image.new("RGB", (300, 400), "white")
 photo.paste((40, 40, 40), (80, 60, 220, 340))
 x = core.to_fashion_mnist(photo)
-assert x.shape == (28, 28) and x.max() == 255 and x[0, 0] < 30
-print("PASS conversion photo → 28×28")
+assert x.shape == (28, 28) and x.max() > 150 and x[0, 0] < 30
+print("PASS conversion photo synthétique → 28×28")
+r = core.real_photos()
+assert np.array_equal(core.to_fashion_mnist(core.real_photo(str(r["name"][0]))), r["X"][0])
+print("PASS photos réelles : conversion embarquée identique à l’import")
 
 # Entraînement sur étiquettes : cible synthétique de test uniquement
 from demo.views.catalogue import _binary, _features  # noqa: E402
 X, names = _features(res)
-assert X.shape[0] == 200 and X.shape[1] == len(names)
+assert X.shape[0] == 70 and X.shape[1] == len(names)
 assert _binary(pd.Series(["oui", "non", "oui"])).tolist() == [1, 0, 1]
 print("PASS caractéristiques d’entraînement")
 print("Toutes les vues passent sans exception.")
