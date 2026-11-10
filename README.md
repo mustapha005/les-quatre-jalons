@@ -5,7 +5,23 @@
 
 Application bonus du travail UC2. Elle exécute les modèles sauvegardés des quatre jalons, sans relancer l’entraînement. Les huit modèles sélectionnés, les vocabulaires, les transformations et 200 exemples de validation par jeu sont inclus. Aucun téléchargement Kaggle ni clé API n’est nécessaire au lancement.
 
-## Ce que l’application démontre
+## Pages de l’application (AtlasShop Intelligence)
+
+| Page | Ce que l’on fait | Modèles au choix |
+| --- | --- | --- |
+| Boutique en direct | Navigation dans une boutique démo (détails, panier, recherche, retrait) : chaque clic devient un événement et la probabilité d’achat est recalculée en temps réel. Onglet « client automatique » : une session de validation est rejouée événement par événement. | GRU (J4) · MLP riche (J1) |
+| Prédire les achats | Import d’une base de parcours clients (CSV, une ligne par événement) → probabilité d’achat par session, rang, top 10 % ciblé, export CSV. Si une colonne `achat` est présente : AUC, P@10 %, précision moyenne. Comparaison des deux modèles. | GRU (J4) · MLP riche (J1) |
+| Potentiel produit | Photo (ou annonce exemple) + titre + description + prix → catégorie, prix estimé, contrôle de l’image par l’auto-encodeur et indice de potentiel de vente détaillé facteur par facteur (pondération réglable). | CNN (J2) · MLP (J1) · Multitâche B (J3) · texte BoW (J4) ; prix J1 ou J3 |
+| Scorer un catalogue | Import d’un catalogue CSV (+ ZIP d’images facultatif) → indice par produit, fort / faible potentiel, graphiques, export. **Entraîner sur vos étiquettes** : avec une colonne cible (`vendu`, `ventes`, `viral`…), un modèle scikit-learn apprend une vraie probabilité de vente, évaluée par validation croisée. | mêmes modèles + régression logistique / forêt aléatoire / gradient boosting |
+| Les quatre jalons | Les vues d’origine ci-dessous, dans le nouveau style. | modèles retenus |
+
+Les pages « Prédire les achats » et « Scorer un catalogue » proposent un fichier modèle à télécharger (construit depuis les 200 exemples de validation) pour connaître le format exact.
+
+**À propos de l’indice de potentiel.** Les données UC2 ne contiennent ni ventes par produit ni étiquette « viral ». L’indice est donc une combinaison transparente de sorties des modèles (prix saisi vs prix estimé, confiance de catégorie, accord texte/image, richesse de l’annonce, conformité de l’image) et non une probabilité calibrée. Une vraie probabilité de vente demande un historique étiqueté : c’est le rôle de « Entraîner sur vos étiquettes ».
+
+**Boutique démo.** Les codes d’événement 1–5 sont fournis sans dictionnaire. L’interface leur associe : voir le produit = 1, détails = 2, panier = 3, retrait = 4, recherche = 5 (affiché dans l’application). Les photos réelles sont converties au format 28×28 des jalons ; l’auto-encodeur indique si elles sortent de la distribution apprise.
+
+## Ce que l’application démontre (vues d’origine)
 
 | Vue | Entrées et sorties |
 | --- | --- |
@@ -64,7 +80,7 @@ Depuis la racine, avec le Python de l’environnement :
 .\.venv\Scripts\python.exe tests/test_app.py
 ```
 
-Le premier vérifie les empreintes des fichiers et les poids sélectionnés. Le second exécute les quatre vues, les derniers exemples, les descriptions vides et les anomalies synthétiques avec `streamlit.testing.v1.AppTest`. Aucun entraînement n’est effectué.
+Le premier vérifie les empreintes des fichiers et les poids sélectionnés. Le second exécute toutes les pages (boutique en direct et replay, import de sessions, potentiel produit avec chaque modèle, catalogue, quatre vues d’origine), les fichiers utilisateurs (colonnes manquantes, sessions de plus de 60 événements, catalogue sans images, conversion de photo) avec `streamlit.testing.v1.AppTest`. Aucun entraînement n’est effectué.
 
 ## Données, traçabilité et limites
 
